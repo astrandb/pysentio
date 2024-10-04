@@ -43,7 +43,10 @@ class SentioPro:
         self._port = port
         self._baud = baud
         self._timeout = timeout
-        self._serial = Serial(self._port, self._baud, timeout=self._timeout)
+        try: 
+            self._serial = Serial.serial_for_url(self._port, self._baud, timeout=self._timeout) 
+        except AttributeError: 
+            self._serial = Serial.Serial(self._port, self._baud, timeout=self._timeout)
 
     def open(self):
         self._serial.port = self._port
