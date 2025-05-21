@@ -6,6 +6,7 @@ PYS_STATE_ON = 'on'
 PYS_STATE_OFF = 'off'
 from serial import Serial, SerialException
 from .const import NAME, VERSION, DEFAULT_BAUD, DEFAULT_SERIALPORT, SERIAL_READ_TIMEOUT
+import serial
 import logging
 import re
 
@@ -43,7 +44,10 @@ class SentioPro:
         self._port = port
         self._baud = baud
         self._timeout = timeout
-        self._serial = Serial(self._port, self._baud, timeout=self._timeout)
+        try: 
+            self._serial = serial.serial_for_url(self._port, self._baud, timeout=self._timeout) 
+        except AttributeError: 
+            self._serial = serial.Serial(self._port, self._baud, timeout=self._timeout)
 
     def open(self):
         self._serial.port = self._port
