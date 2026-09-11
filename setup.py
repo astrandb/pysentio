@@ -1,21 +1,25 @@
-import setuptools
 import codecs
-import re
 import os
+import re
+
+import setuptools
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+
 def read(*parts):
-    with codecs.open(os.path.join(here, *parts), 'r') as fp:
+    with codecs.open(os.path.join(here, *parts), "r") as fp:
         return fp.read()
+
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^VERSION = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
+    version_match = re.search(
+        r"^VERSION = ['\"]([^'\"]*)['\"]", version_file, re.MULTILINE
+    )
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
@@ -23,7 +27,7 @@ def find_version(*file_paths):
 
 setuptools.setup(
     name="pysentio",
-    version=find_version('pysentio', 'const.py'),
+    version=find_version("pysentio", "const.py"),
     author="Ake Strandberg",
     author_email="ake@strandberg.eu",
     description="Python library for Sentio Pro Sauna Controller",
@@ -35,12 +39,12 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    # How mature is this project? Common values are
-    #   3 - Alpha
-    #   4 - Beta
-    #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
+        "Development Status :: 4 - Beta",
     ],
-    python_requires='>=3.8',
+    python_requires=">=3.12",
     install_requires=["pyserial>=3.4"],
 )
