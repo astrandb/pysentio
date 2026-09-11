@@ -3,7 +3,8 @@
 import logging
 import re
 
-from serial import Serial, SerialException
+import serialx
+from serialx import SerialException
 
 from .const import NAME, SERIAL_READ_TIMEOUT, VERSION
 
@@ -42,20 +43,22 @@ class SentioPro:
     _type: str = ""
     _status: str = ""
 
-    def __init__(self, port, baud, timeout=SERIAL_READ_TIMEOUT):
+    def __init__(self, path, baud, timeout=SERIAL_READ_TIMEOUT):
         _LOGGER.debug("Starting pysentio - version: %s", VERSION)
-        self._port = port
+        self._path = path
         self._baud = baud
         self._timeout = timeout
-        self._serial = Serial(self._port, self._baud, timeout=self._timeout)
+        self._serial = serialx.serial_for_url(
+            self._path, self._baud, read_timeout=self._timeout
+        )
 
     def open(self):
-        self._serial.port = self._port
+        self._serial.path = self._path
         self._serial.baudrate = self._baud
-        self._serial.timeout = self._timeout
+        self._serial.read_timeout = self._timeout
         self._serial.open()
-        self._serial.flushInput()
-        self._serial.flushOutput()
+        self._serial.reset_read_buffer()
+        self._serial.reset_write_buffer()
 
     def close(self):
         self._serial.close()
@@ -184,8 +187,8 @@ class SentioPro:
             ret = self._serial.read_until(b";\r\n", 400).decode("utf-8")
             _LOGGER.debug("Response->%s".strip(), ret)
             self._parse_response(ret)
-        except SerialException:
-            _LOGGER.error("Problem communicating with %s", self._port)
+        except (OSError, TimeoutError, SerialException):
+            _LOGGER.error("Problem communicating with %s", self._path)
         #        self._serial.close()
         return ret
 
