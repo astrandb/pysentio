@@ -43,8 +43,8 @@ setuptools.setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
     ],
     python_requires=">=3.12",
-    install_requires=["pyserial>=3.4"],
+    install_requires=["serialx"],
 )
